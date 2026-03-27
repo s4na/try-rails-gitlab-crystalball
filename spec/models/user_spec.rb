@@ -30,6 +30,13 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#display_name' do
+    it 'returns the titleized name' do
+      user = build(:user, name: 'john doe')
+      expect(user.display_name).to eq('John Doe')
+    end
+  end
+
   describe 'callbacks' do
     it 'normalizes email to lowercase before saving' do
       user = create(:user, email: 'Foo@ExAMPle.CoM')
