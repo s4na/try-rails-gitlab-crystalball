@@ -72,7 +72,7 @@ jobs:
         run: bin/rails db:create db:migrate
 
       - name: Download Crystalball execution map
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: crystalball-map
           path: tmp/
