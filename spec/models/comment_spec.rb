@@ -17,7 +17,7 @@ RSpec.describe Comment, type: :model do
       post = create(:post, user: user)
       old_comment = create(:comment, user: user, post: post, created_at: 1.day.ago)
       new_comment = create(:comment, user: user, post: post, created_at: 1.hour.ago)
-      expect(Comment.chronological).to eq([old_comment, new_comment])
+      expect(Comment.chronological).to eq([ old_comment, new_comment ])
     end
   end
 end

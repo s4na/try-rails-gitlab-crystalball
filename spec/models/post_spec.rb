@@ -16,7 +16,7 @@ RSpec.describe Post, type: :model do
       user = create(:user)
       old_post = create(:post, user: user, created_at: 1.day.ago)
       new_post = create(:post, user: user, created_at: 1.hour.ago)
-      expect(Post.recent).to eq([new_post, old_post])
+      expect(Post.recent).to eq([ new_post, old_post ])
     end
   end
 

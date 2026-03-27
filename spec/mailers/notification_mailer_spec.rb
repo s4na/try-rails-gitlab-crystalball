@@ -10,7 +10,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
     it 'renders the headers' do
       expect(mail.subject).to eq('New comment on "My Great Post"')
-      expect(mail.to).to eq(['alice@example.com'])
+      expect(mail.to).to eq([ 'alice@example.com' ])
     end
 
     it 'renders the body with commenter name' do
@@ -26,7 +26,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
     it 'renders the headers' do
       expect(mail.subject).to eq('Charlie started following you')
-      expect(mail.to).to eq(['alice@example.com'])
+      expect(mail.to).to eq([ 'alice@example.com' ])
     end
 
     it 'renders the body with follower name' do
@@ -40,7 +40,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
     it 'renders the headers' do
       expect(mail.subject).to eq('Welcome to the Blog!')
-      expect(mail.to).to eq(['dave@example.com'])
+      expect(mail.to).to eq([ 'dave@example.com' ])
     end
 
     it 'renders the body with user name' do

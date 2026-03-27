@@ -29,7 +29,15 @@ jobs:
         env:
           RAILS_ENV: test
           CRYSTALBALL: 'true'
-        run: bundle exec rspec
+        run: bundle exec rspec --format progress --format RspecJunitFormatter --out tmp/rspec-results.xml
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: 'RSpec Results'
+          path: tmp/rspec-results.xml
+          reporter: java-junit
 
       - name: Upload Crystalball execution map
         uses: actions/upload-artifact@v4
@@ -72,7 +80,15 @@ jobs:
           echo "Changed files vs origin/main:"
           git diff --name-only origin/main...HEAD || true
           echo "---"
-          bundle exec crystalball 2>&1 || echo "Crystalball prediction completed (may have no predictions if no diff from main)"
+          bundle exec crystalball --format progress --format RspecJunitFormatter --out tmp/crystalball-results.xml 2>&1 || echo "Crystalball prediction completed (may have no predictions if no diff from main)"
+
+      - name: Predictive Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: 'Crystalball Predictive Results'
+          path: tmp/crystalball-results.xml
+          reporter: java-junit
 
   lint:
     runs-on: ubuntu-latest
