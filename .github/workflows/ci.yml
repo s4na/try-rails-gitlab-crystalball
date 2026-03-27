@@ -45,7 +45,7 @@ jobs:
           reporter: java-junit
 
       - name: Upload Crystalball execution map
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: crystalball-map
           path: tmp/crystalball_data.yml
