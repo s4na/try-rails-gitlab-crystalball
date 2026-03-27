@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main, 'claude/**' ]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up database
+        env:
+          RAILS_ENV: test
+        run: bin/rails db:create db:migrate
+
+      - name: Run full test suite and generate Crystalball map
+        env:
+          RAILS_ENV: test
+          CRYSTALBALL: 'true'
+        run: bundle exec rspec --format progress --format RspecJunitFormatter --out tmp/rspec-results.xml
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: 'RSpec Results'
+          path: tmp/rspec-results.xml
+          reporter: java-junit
+
+      - name: Upload Crystalball execution map
+        uses: actions/upload-artifact@v4
+        with:
+          name: crystalball-map
+          path: tmp/crystalball_data.yml
+          retention-days: 7
+
+  test-predictive:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up database
+        env:
+          RAILS_ENV: test
+        run: bin/rails db:create db:migrate
+
+      - name: Download Crystalball execution map
+        uses: actions/download-artifact@v4
+        with:
+          name: crystalball-map
+          path: tmp/
+
+      - name: Run Crystalball predictive tests
+        env:
+          RAILS_ENV: test
+        run: |
+          echo "=== Crystalball Predictive Test Selection ==="
+          echo "Changed files vs origin/main:"
+          git diff --name-only origin/main...HEAD || true
+          echo "---"
+          bundle exec crystalball --format progress --format RspecJunitFormatter --out tmp/crystalball-results.xml 2>&1 || echo "Crystalball prediction completed (may have no predictions if no diff from main)"
+
+      - name: Predictive Test Report
+        uses: dorny/test-reporter@v1
+        if: always() && hashFiles('tmp/crystalball-results.xml') != ''
+        with:
+          name: 'Crystalball Predictive Results'
+          path: tmp/crystalball-results.xml
+          reporter: java-junit
+
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      RUBOCOP_CACHE_ROOT: tmp/rubocop
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Prepare RuboCop cache
+        uses: actions/cache@v4
+        env:
+          DEPENDENCIES_HASH: ${{ hashFiles('.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'Gemfile.lock') }}
+        with:
+          path: ${{ env.RUBOCOP_CACHE_ROOT }}
+          key: rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
+          restore-keys: |
+            rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-
+
+      - name: Lint code for consistent style
+        run: bin/rubocop -f github
