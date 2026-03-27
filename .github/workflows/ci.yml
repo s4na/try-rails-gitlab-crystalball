@@ -37,7 +37,7 @@ jobs:
         run: bundle exec rspec --format progress --format RspecJunitFormatter --out tmp/rspec-results.xml
 
       - name: Test Report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         if: always()
         with:
           name: 'RSpec Results'
@@ -88,7 +88,7 @@ jobs:
           bundle exec crystalball --format progress --format RspecJunitFormatter --out tmp/crystalball-results.xml 2>&1 || echo "Crystalball prediction completed (may have no predictions if no diff from main)"
 
       - name: Predictive Test Report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         if: always() && hashFiles('tmp/crystalball-results.xml') != ''
         with:
           name: 'Crystalball Predictive Results'
