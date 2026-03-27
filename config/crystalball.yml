@@ -1,0 +1,4 @@
+---
+execution_map_path: tmp/crystalball_data.yml
+diff_from: origin/main
+map_expiration_period: 604800

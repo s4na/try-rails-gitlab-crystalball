@@ -12,6 +12,18 @@
 # the additional setup, and require it from the spec files that actually need
 # it.
 #
+# Crystalball: generate execution map when CRYSTALBALL=true
+if ENV['CRYSTALBALL'] == 'true'
+  require 'crystalball'
+  require 'crystalball/rails'
+
+  Crystalball::MapGenerator.start! do |config|
+    config.register Crystalball::MapGenerator::CoverageStrategy.new
+    config.register Crystalball::MapGenerator::DescribedClassStrategy.new
+    config.register Crystalball::Rails::MapGenerator::ActionViewStrategy.new
+  end
+end
+
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

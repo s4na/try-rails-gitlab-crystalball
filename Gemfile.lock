@@ -75,6 +75,8 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    addressable (2.8.9)
+      public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt (3.1.22)
@@ -116,6 +118,14 @@ GEM
     fugit (1.12.1)
       et-orbi (~> 1.4)
       raabro (~> 1.4)
+    git (3.1.1)
+      activesupport (>= 5.0)
+      addressable (~> 2.8)
+      process_executer (~> 1.3)
+      rchardet (~> 1.9)
+    gitlab-crystalball (1.1.3)
+      git (< 4)
+      ostruct (< 1)
     globalid (1.3.0)
       activesupport (>= 6.1)
     i18n (1.14.8)
@@ -200,6 +210,7 @@ GEM
       prettyprint
     prettyprint (0.2.0)
     prism (1.9.0)
+    process_executer (1.3.0)
     propshaft (1.3.1)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
@@ -207,6 +218,7 @@ GEM
     psych (5.3.1)
       date
       stringio
+    public_suffix (7.0.5)
     puma (7.2.0)
       nio4r (~> 2.0)
     raabro (1.4.0)
@@ -251,6 +263,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
+    rchardet (1.10.0)
     rdoc (7.2.0)
       erb
       psych (>= 4.0.0)
@@ -378,6 +391,7 @@ DEPENDENCIES
   debug
   factory_bot_rails
   faker
+  gitlab-crystalball
   importmap-rails
   kamal
   propshaft
